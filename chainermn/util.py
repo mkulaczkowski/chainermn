@@ -37,6 +37,7 @@ def _global_except_hook(exctype, value, traceback):
             raise e
 
 
+#
 # An MPI runtime is expected to kill all of its child processes if one of them
 # exits abnormally or without calling `MPI_Finalize()`.  However,
 # when a Python program run on `mpi4py`, the MPI runtime often fails to detect
@@ -44,10 +45,15 @@ def _global_except_hook(exctype, value, traceback):
 # It is problematic especially when you run ChainerMN programs on a cloud
 # environment, on which you are charged on time basis.
 # See https://github.com/chainer/chainermn/issues/236 for more discussion.
+#
+# To activate this handler, set CHAINERMN_FORCE_ABORT_ON_EXCEPTION
+# to a non-empty value.
+# Note that you need to pass an argument to mpiexec (-x for Open MPI)
+# to activate the handler in all processes.
+#
 def hook_exception_handler():
     global _orig_exc_hook
     var = os.environ.get('CHAINERMN_FORCE_ABORT_ON_EXCEPTION')
     if var is not None and len(var) > 0:
-        sys.stderr.write("****** Activating global exception hook")
         _orig_exc_hook = sys.excepthook
-        sys.excepthook = _global_except_hook()
+        sys.excepthook = _global_except_hook

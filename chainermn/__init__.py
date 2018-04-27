@@ -7,6 +7,7 @@ from chainermn import functions  # NOQA
 from chainermn import iterators  # NOQA
 from chainermn import links  # NOQA
 from chainermn import optimizers  # NOQA
+import chainermn.util  # NOQA
 
 from chainermn.communicators import CommunicatorBase  # NOQA
 from chainermn.communicators import create_communicator  # NOQA
@@ -17,5 +18,6 @@ from chainermn.extensions import create_multi_node_evaluator  # NOQA
 from chainermn.links import MultiNodeChainList  # NOQA
 from chainermn.optimizers import create_multi_node_optimizer  # NOQA
 
+chainermn.util.hook_exception_handler()
 
 __version__ = pkg_resources.get_distribution('chainermn').version
