@@ -43,6 +43,7 @@ def _global_except_hook(exctype, value, traceback):
 # a process failure, and the rest of the processes hang infinitely.
 # It is problematic especially when you run ChainerMN programs on a cloud
 # environment, on which you are charged on time basis.
+# See https://github.com/chainer/chainermn/issues/236 for more discussion.
 def hook_exception_handler():
     global _orig_exc_hook
     var = os.environ.get('CHAINERMN_FORCE_ABORT_ON_EXCEPTION')
