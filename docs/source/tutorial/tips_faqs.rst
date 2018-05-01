@@ -40,6 +40,7 @@ Using FP16
 ~~~~~~~~~~
 FP16 (16-bit half precision floating point values) is not supported in ChainerMN as of now.
 
+.. _faq-global-exc-hook:
 
 MPI process hangs after an unhandled Python exception.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
