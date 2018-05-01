@@ -31,7 +31,7 @@ def _global_except_hook(exctype, value, traceback):
             mpi4py.MPI.COMM_WORLD.Abort(1)
         except Exception as e:
             # Something is completely broken...
-            # There's nothing we can do any more ¯\_(ツ)_/¯
+            # There's nothing we can do any more
             sys.stderr.write(
                 "Sorry, failed to stop MPI and the process may hang.\n")
             sys.stderr.flush()
@@ -62,8 +62,9 @@ def add_hook():
     global _orig_exc_hook
 
     if _orig_exc_hook is not None:
-        warnings.warn("chainer.global_exc_hook.add_hook() seems to be called multiple times. "
-                      "Ignoring.", stacklevel=2)
+        warnings.warn("chainer.global_exc_hook.add_hook()"
+                      "seems to be called multiple times. Ignoring.",
+                      stacklevel=2)
         return
 
     _orig_exc_hook = sys.excepthook
