@@ -43,10 +43,12 @@ FP16 (16-bit half precision floating point values) is not supported in ChainerMN
 
 MPI process hangs after an unhandled Python exception.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-MPI runtime is expected to kill all child processes if one of them
+
+
+An MPI runtime is expected to kill all of its child processes if one of them
 exits abnormally or without calling `MPI_Finalize()`.  However,
 when a Python program runs on `mpi4py`, the MPI runtime often fails to detect
-a process failure, and the rest of the processes hang infinitely. It is especially problematic
+the process failure, and the rest of the processes hang infinitely. It is especially problematic
 when you run your ChainerMN program on a cloud environment, in which you are charged on time basis.
 
 This tiny program demonstrates the issue (note that it is not specific to ChainerMN).::
@@ -69,8 +71,12 @@ To avoid this issue, ChainerMN implements a workaround. A custom exception handl
 `CHAINERMN_FORCE_ABORT_ON_EXCEPTION` is set to a non-empty value.
 The handler hooks uncaught exceptions and call `MPI_Abort()` to ensure that all process are terminated.
 
-The `mpi4py` library also implements this mechanism[1]. However, we don't recommend the workaround
-(adding `-m mpi4py` to command line arguments) because it may cause other problems when used with
-Chainer's `MultiprocessIterator` .
+`mpi4py` also offers a solution for this. ::
 
-[1] http://mpi4py.scipy.org/docs/usrman/mpi4py.run.html
+  $ mpiexec -n 2 python -m mpi4py yourscript.py ...
+
+This also works well with ChainerMN. See `here <http://mpi4py.readthedocs.io/en/stable/mpi4py.run.html>`_
+for more details. You can choose any of these solutions for depending on your environment and restrictions.
+
+NOTE: These techniques are effective only for unhandled Python exceptions.
+If your program crashes due to lower-level issues such as `SIGSEGV`, the MPI process may still hang.
