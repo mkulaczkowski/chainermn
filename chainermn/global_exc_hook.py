@@ -1,5 +1,6 @@
 import os
 import sys
+import warnings
 
 
 _orig_exc_hook = None
@@ -51,9 +52,19 @@ def _global_except_hook(exctype, value, traceback):
 # Note that you need to pass an argument to mpiexec (-x for Open MPI)
 # to activate the handler in all processes.
 #
-def hook_exception_handler():
-    global _orig_exc_hook
+def add_hook_if_enabled():
     var = os.environ.get('CHAINERMN_FORCE_ABORT_ON_EXCEPTION')
     if var is not None and len(var) > 0:
-        _orig_exc_hook = sys.excepthook
-        sys.excepthook = _global_except_hook
+        add_hook()
+
+
+def add_hook():
+    global _orig_exc_hook
+
+    if _orig_exc_hook is not None:
+        warnings.warn("chainer.global_exc_hook.add_hook() seems to be called multiple times. "
+                      "Ignoring.", stacklevel=2)
+        return
+
+    _orig_exc_hook = sys.excepthook
+    sys.excepthook = _global_except_hook
