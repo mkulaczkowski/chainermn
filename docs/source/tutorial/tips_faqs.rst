@@ -68,15 +68,24 @@ This tiny program demonstrates the issue (note that it is not specific to Chaine
   # mpiexec -n 2 python test.py
 
 To avoid this issue, ChainerMN implements a workaround. A custom exception handler is activated if
-`CHAINERMN_FORCE_ABORT_ON_EXCEPTION` is set to a non-empty value.
+`CHAINERMN_FORCE_ABORT_ON_EXCEPTION` is set to a non-empty value.::
+
+  $ mpiexec -n 2 -x CHAINERMN_FORCE_ABORT_ON_EXCEPTION=1 python yourscript.py ...
+
+Alternatively, you can explicitly call ``chainermn.global_exc_hook.add_hook()`` from your code.::
+
+  import chainermn
+
+  chainermn.global_exc_hook.add_hook()
+
 The handler hooks uncaught exceptions and call `MPI_Abort()` to ensure that all process are terminated.
 
-`mpi4py` also offers a solution for this. ::
+`mpi4py` also offers a similar solution for this. ::
 
   $ mpiexec -n 2 python -m mpi4py yourscript.py ...
 
-This also works well with ChainerMN. See `here <http://mpi4py.readthedocs.io/en/stable/mpi4py.run.html>`_
-for more details. You can choose any of these solutions for depending on your environment and restrictions.
+This works well with ChainerMN. See `here <http://mpi4py.readthedocs.io/en/stable/mpi4py.run.html>`_
+for more details. You can choose any of these solutions depending on your environment or platform restrictions.
 
 NOTE: These techniques are effective only for unhandled Python exceptions.
 If your program crashes due to lower-level issues such as `SIGSEGV`, the MPI process may still hang.
