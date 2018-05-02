@@ -11,8 +11,6 @@ from chainer.training import extensions
 
 import chainermn
 
-# chainermn.global_exc_hook.add_hook()
-
 
 class MLP(chainer.Chain):
 
