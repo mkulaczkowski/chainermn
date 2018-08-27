@@ -5,8 +5,7 @@ import subprocess
 
 
 def main():
-    subprocess.run("mpiexec -n 4 python examples/mnist/train_mnist.py", shell=True, check=True)
-
+    subprocess.run("mpiexec -n 4 python examples/mnist/train_mnist.py --allow-run-as-root", shell=True, check=True)
 
 if __name__ == '__main__':
     main()
